@@ -1,59 +1,56 @@
-# ProductosApp
+# CRUD de Productos con Angular y Firebase
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.29.
+## Propósito
+Aplicación web en Angular que administra productos almacenados en Cloud Firestore,
+con actualización en tiempo real mediante un Observable
+(Práctica 02.2 – Programación y Plataformas Web, Universidad Politécnica Salesiana).
 
-## Development server
+- **Aplicación desplegada (Vercel):** https://TU-APP.vercel.app
+- **Repositorio (GitHub):** https://github.com/TU-USUARIO/TU-REPOSITORIO
 
-To start a local development server, run:
+## Funciones del CRUD
+- **Crear:** formulario que registra un producto en la colección `productos`.
+- **Consultar:** tabla HTML alimentada por un Observable (`onSnapshot`) que se actualiza en tiempo real.
+- **Actualizar:** el botón *Editar* carga los datos en el formulario y guarda los cambios en el mismo documento, usando su identificador.
+- **Eliminar:** solicita confirmación; si se cancela, el producto se conserva.
+- **Validaciones:** nombre y categoría con texto; precio numérico mayor o igual a 0; stock entero mayor o igual a 0.
+- Mensajes cuando una operación falla o cuando la colección está vacía.
 
+## Modelo de producto
+| Campo     | Tipo   | Descripción                              |
+|-----------|--------|------------------------------------------|
+| id        | string | Identificador del documento en Firestore |
+| nombre    | string | Nombre del producto                      |
+| precio    | number | Precio (≥ 0)                             |
+| stock     | number | Cantidad entera (≥ 0)                    |
+| categoria | string | Categoría del producto                   |
+
+## Arquitectura
+- `src/app/services/producto.service.ts`: único lugar con acceso a Firestore (consulta en tiempo real, crear, actualizar y eliminar).
+- `src/app/productos/`: componente con el formulario, las validaciones y la tabla.
+- `src/app/models/producto.model.ts`: interfaz del producto.
+
+## Configuración de Firebase
+1. Crear un proyecto en [Firebase Console](https://console.firebase.google.com) y registrar una app web.
+2. Activar **Cloud Firestore** con reglas que permitan leer y escribir en la colección `productos`.
+3. Copiar `src/environments/environment.example.ts` como `src/environments/environment.ts`
+   y completar las credenciales. Este archivo está en `.gitignore` y no se sube al repositorio.
+
+## Instalación y ejecución local
 ```bash
-ng serve
+git clone https://github.com/TU-USUARIO/TU-REPOSITORIO.git
+cd TU-REPOSITORIO
+npm install
+cp src/environments/environment.example.ts src/environments/environment.ts
+npm start
 ```
+Abrir http://localhost:4200
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Despliegue en Vercel
+1. Importar el repositorio de GitHub en [Vercel](https://vercel.com).
+2. Configurar:
+   - **Build Command:** `node scripts/set-env.js && npm run build`
+   - **Output Directory:** `dist/productos-app/browser`
+3. Agregar las variables de entorno: `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_PROJECT_ID`,
+   `FIREBASE_STORAGE_BUCKET`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_APP_ID`.
+4. Desplegar y probar las cuatro operaciones desde la URL pública.
